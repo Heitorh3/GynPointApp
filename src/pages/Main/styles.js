@@ -28,6 +28,6 @@ export const SubmitButton = styled(RectButton)`
     align-items: center;
     background: #7159c1;
     border-radius: 4px;
-    padding-left: 10px;
+    margin-left: 10px;
     padding: 0 12px;
 `;
