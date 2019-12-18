@@ -39,6 +39,7 @@
         "react/no-unused-state": "off",
         "react/static-property-placement": "off",
         "react/jsx-props-no-spreading":"off",
-        "react/prefer-stateless-function":"off"
+        "react/prefer-stateless-function":"off",
+        "react/sort-comp":"off"
     }
 }
