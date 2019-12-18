@@ -40,6 +40,6 @@
         "react/static-property-placement": "off",
         "react/jsx-props-no-spreading":"off",
         "react/prefer-stateless-function":"off",
-        "react/sort-comp":"off"
+        "react/sort-comp":"off",
     }
 }
