@@ -33,7 +33,7 @@ export default class User extends Component {
     state = {
         stars: [],
         page: 1,
-        loading: false,
+        loading: true,
         refreshing: false,
     };
 
