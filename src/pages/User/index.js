@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
-import {ActivityIndicator, TouchableOpacity, View} from 'react-native';
-import PropTypes from 'prop-types';
+import {ActivityIndicator, TouchableOpacity} from 'react-native';
 import {WebView} from 'react-native-webview';
 
-import api from '../../services/api';
+import PropTypes from 'prop-types';
 
+import api from '../../services/api';
 import {
     Container,
     Header,
@@ -38,24 +38,18 @@ export default class User extends Component {
         loading: false,
     };
 
-    async componentDidMount() {
-        const {navigation} = this.props;
-        const user = navigation.getParam('user');
-        const {page, per_page, loading} = this.state;
-
-        const response = await api.get(`/users/${user.login}/starred`, {
-            params: {
-                page,
-                per_page,
-            },
-        });
-        this.setState({starts: response.data, page: page + 1});
+    componentDidMount() {
+        this.loadRepositories();
     }
 
-    onEndReached = async () => {
+    loadRepositories = async () => {
         const {navigation} = this.props;
         const user = navigation.getParam('user');
-        const {per_page, page} = this.state;
+        const {page, per_page} = this.state;
+
+        if (this.state.loading) return null;
+
+        this.setState({loading: true});
 
         const response = await api.get(`/users/${user.login}/starred`, {
             params: {
@@ -65,12 +59,17 @@ export default class User extends Component {
         });
 
         this.setState({
-            starts: [...this.state.starts, ...response.data],
+            starts: response.data,
             page: page + 1,
+            loading: false,
         });
     };
 
-    renderFooter = () => {
+    onEndReached = async () => {
+        this.loadRepositories();
+    };
+
+    renderLoading = () => {
         const {loading} = this.state;
 
         if (!loading) return null;
@@ -81,13 +80,8 @@ export default class User extends Component {
         );
     };
 
-    handleShowItem = html_url => {
-        //console.tron.log(url);
-        return (
-            <View>
-                <WebView source={{uri: html_url}} />;
-            </View>
-        );
+    handleShowDetailsRepo = html_url => {
+        return <WebView originWhitelist={['*']} source={{uri: html_url}} />;
     };
 
     render() {
@@ -107,7 +101,7 @@ export default class User extends Component {
                     keyExtractor={star => String(star.id)}
                     renderItem={({item}) => (
                         <TouchableOpacity
-                            onPress={() => this.handleShowItem(item.html_url)}>
+                            onPress={this.handleShowDetailsRepo(item.html_url)}>
                             <Starred>
                                 <OwnerAvatar
                                     source={{uri: item.owner.avatar_url}}
@@ -119,9 +113,9 @@ export default class User extends Component {
                             </Starred>
                         </TouchableOpacity>
                     )}
-                    onEndReached={() => this.onEndReached()}
+                    onEndReached={this.loadRepositories}
                     onEndReachedThreshold={0.1} //10%
-                    ListFooterComponent={this.renderFooter}
+                    ListFooterComponent={this.renderLoading}
                 />
             </Container>
         );

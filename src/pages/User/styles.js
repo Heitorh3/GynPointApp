@@ -79,7 +79,6 @@ export const Author = styled.Text`
 `;
 
 export const Loading = styled.View`
-    align-content: center;
-    margin: 20px;
+    align-self: center;
     color: #7159c1;
 `;
